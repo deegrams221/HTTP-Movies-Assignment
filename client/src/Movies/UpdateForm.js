@@ -16,40 +16,40 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
 export default function UpdateForm(props) {
-    const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState({});
   
-    useEffect(() => {
-      if (props.movies.length > 0) {
-        const movieToUpdate = props.movies.find(
-          movie => `${movie.id}` === props.match.params.id,
-        );
-        setMovie(movieToUpdate);
-      }
-    }, [props.match.params.id, props.movies]);
+  const fetchMovie = id => {
+    axios
+      .get(`http://localhost:5000/api/movies/${id}`)
+      .then(res => setMovie(res.data))
+      .catch(err => console.log(err.response));
+  };
   
-    const handleChange = e =>
-      setMovie({ ...movie, [e.target.name]: e.target.value });
+  const {match, movies} = props;
+  useEffect(() => {
+    const id = match.params.id;
+    fetchMovie(id);
+  }, [match, movies]);
+  
+    const handleChange = ev => {
+      ev.persist();
+      setMovie({...movie, [ev.target.name]: ev.target.value});
+    };
   
     const handleSubmit = e => {
       e.preventDefault();
       axios
         .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
         .then(res => {
-          console.log(res.data);
-          props.setMovies([
-            ...props.movies.filter(el => el.id !== movie.id),
-            res.data,
-          ]);
-          // axios
-          //   .get('http://localhost:5000/api/movies')
-          //   .then(res => props.setMovies(res.data));
+          //console.log(res.data);
+          props.setMovies(res.data);
           props.history.push(`/movies/${movie.id}`);
         })
-        .catch(err => console.log(err));
+        .catch(error => console.log(error));
     };
   
     return (
-      <div className='form'>
+      <div className='update-form'>
         <h2>Update Movie</h2>
         <form onSubmit={handleSubmit}>
           <label>
@@ -70,4 +70,4 @@ export default function UpdateForm(props) {
         </form>
       </div>
     );
-  }
+};
