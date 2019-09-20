@@ -48,9 +48,7 @@ export default function UpdateForm(props) {
         //console.log('Put: res', res.data);
         setMovie(initialMovie);
         props.setMovies([...props.movie, res.data]);
-        
-        props.history.push(`/`);
-          
+        props.history.push(`/movies`);
       })
       .catch(error => console.log(error));
   };
@@ -73,8 +71,8 @@ export default function UpdateForm(props) {
           <input type='text' name='metascore' onChange={handleChange} placeholder='metascore' value={movie.metascore} />
         </label>
         <label>
-          Metascore:
-          <input type='text' name='stars' onChange={handleChange} placeholder='stars' value={movie.stars} />
+          Actors:
+          <input type='text' name='stars' onChange={handleChange} placeholder='Actors' value={movie.stars} />
         </label>
           
         <button type='submit'>Update Movie</button>
