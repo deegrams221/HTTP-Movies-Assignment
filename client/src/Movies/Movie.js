@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import MovieCard from "./MovieCard";
+import {Link} from 'react-router-dom';
+
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
@@ -22,13 +24,22 @@ export default class Movie extends React.Component {
   fetchMovie = id => {
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
-      .then(res => this.setState({ movie: res.data }))
+      .then(res => this.setState({movie: res.data}))
       .catch(err => console.log(err.response));
   };
 
   saveMovie = () => {
     const addToSavedList = this.props.addToSavedList;
     addToSavedList(this.state.movie);
+  };
+
+  deleteMovie = () => {
+    axios
+      .delete(`http://localhost:5000/api/movies/${this.state.movie.id}`)
+      .then(res => 
+        // console.log(res)
+        this.props.history.push('/'))
+      .catch(error => console.log(error))
   };
 
   render() {
@@ -42,6 +53,11 @@ export default class Movie extends React.Component {
         <div className="save-button" onClick={this.saveMovie}>
           Save
         </div>
+        {/* Add a button in the movie component that routes you to your new route with the movies's id as the URL param */}
+        <Link to={`/update-movie/${this.state.movie.id}`}>
+          <button type='submit'>Update</button>
+        </Link>
+        <button onClick={this.deleteMovie}>Delete</button>
       </div>
     );
   }
